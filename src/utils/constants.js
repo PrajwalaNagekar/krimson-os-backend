@@ -1,0 +1,41 @@
+// utils/constants.js
+
+export const ROLES = {
+  STUDENT: "STUDENT",
+  TEACHER: "TEACHER",
+  PARENT: "PARENT",
+  ADMINISTRATOR: "ADMINISTRATOR",
+  PRINCIPAL: "PRINCIPAL",
+  FINANCE_OFFICER: "FINANCE_OFFICER",
+  MANAGEMENT: "MANAGEMENT",
+  REGISTRAR: "REGISTRAR",
+  ACADEMIC_COORDINATOR: "ACADEMIC_COORDINATOR",
+  COUNSELOR: "COUNSELOR",
+  LIBRARIAN: "LIBRARIAN",
+  IT_ADMIN: "IT_ADMIN",
+};
+
+export const ROLE_LABELS = {
+  STUDENT: "Student",
+  TEACHER: "Teacher",
+  PARENT: "Parent",
+  ADMINISTRATOR: "Administrator",
+  PRINCIPAL: "Principal",
+  FINANCE_OFFICER: "Finance Officer",
+  MANAGEMENT: "Management",
+  REGISTRAR: "Registrar",
+  ACADEMIC_COORDINATOR: "Academic Coordinator",
+  COUNSELOR: "Counselor",
+  LIBRARIAN: "Librarian",
+  IT_ADMIN: "IT / System Admin",
+};
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER: 500,
+};
