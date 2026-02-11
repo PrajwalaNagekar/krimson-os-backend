@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-// import routes from './routes/index.js';
+import routes from './routes/index.routes.js';
+import errorHandler from './middlewares/errorMiddleware.js';
+
 
 const app = express();
 
@@ -20,7 +22,7 @@ app.use(cookieParser());
 app.use(express.static('public'));
 
 // -------------------- Routes --------------------
-// app.use('/api/v1', routes);
+app.use('/api/v1', routes);
 
 app.get('/test', (req, res) => {
     res.json({
@@ -31,13 +33,8 @@ app.get('/test', (req, res) => {
 });
 
 // -------------------- Global Error Handler --------------------
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({
-        success: false,
-        message: 'Internal Server Error',
-        data: null,
-    });
-});
+app.use(errorHandler);
+
+
 
 export { app };

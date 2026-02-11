@@ -1,5 +1,7 @@
 import userService from "../../../identity/services/user.service.js";
 import { HTTP_STATUS } from "../../../../utils/constants.js";
+import { ApiResponse } from "../../../../utils/ApiReponse.js";
+
 
 /**
  * Administration User Management Controller
@@ -13,7 +15,7 @@ import { HTTP_STATUS } from "../../../../utils/constants.js";
 export const assignRoleToUser = async (req, res, next) => {
   try {
     const { email, full_name, role } = req.body;
-    const adminId = req.user?.user_id || "ADMIN";
+    const adminId = req.user?._id;
 
     const result = await userService.createUser(
       { email, full_name, role },
@@ -27,43 +29,54 @@ export const assignRoleToUser = async (req, res, next) => {
     const message = result.role_already_existed
       ? "User already has this role"
       : result.is_existing_user
-      ? "Role added to existing user"
-      : "User created and role assigned successfully. Welcome email sent.";
+        ? "Role added to existing user"
+        : "User created and role assigned successfully. Welcome email sent.";
 
-    res.status(statusCode).json({
-      success: true,
-      data: result,
-      message,
-    });
+    return res.status(statusCode).json(
+      new ApiResponse(statusCode, result, message)
+    );
   } catch (error) {
     next(error);
   }
 };
 
-/**
- * Get all users with their assigned roles
- */
+
 export const getAllUsersWithRoles = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
-    const result = await userService.getAllUsersWithRoles(page, limit);
+    const filters = {
+      search: req.query.search || "",
+      role: req.query.role || "",
+    };
 
-    res.status(HTTP_STATUS.OK).json({
-      success: true,
-      data: result.users,
-      pagination: {
-        total: result.total,
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-      },
-    });
+    const result = await userService.getAllUsersWithRoles(
+      page,
+      limit,
+      filters
+    );
+
+    return res.status(HTTP_STATUS.OK).json(
+      new ApiResponse(
+        HTTP_STATUS.OK,
+        result.users,
+        "Users retrieved successfully",
+        {
+          pagination: {
+            total: result.total,
+            page: result.page,
+            limit: result.limit,
+            totalPages: result.totalPages,
+          },
+        }
+      )
+    );
   } catch (error) {
     next(error);
   }
 };
+
 
 /**
  * Get user by identifier (email, id, or ssomail)
@@ -75,10 +88,9 @@ export const getUserByIdentifier = async (req, res, next) => {
 
     const user = await userService.getUserByIdentifier(identifier);
 
-    res.status(HTTP_STATUS.OK).json({
-      success: true,
-      data: user,
-    });
+    return res.status(HTTP_STATUS.OK).json(
+      new ApiResponse(HTTP_STATUS.OK, user, "User retrieved successfully")
+    );
   } catch (error) {
     next(error);
   }
@@ -92,7 +104,7 @@ export const editUser = async (req, res, next) => {
   try {
     const { identifier } = req.params;
     const { full_name, roles, role } = req.body; // Accept both roles array and single role
-    const adminId = req.user?.user_id || "ADMIN";
+    const adminId = req.user?._id || "ADMIN";
 
     const updatedUser = await userService.updateUser(
       identifier,
@@ -100,11 +112,9 @@ export const editUser = async (req, res, next) => {
       adminId
     );
 
-    res.status(HTTP_STATUS.OK).json({
-      success: true,
-      data: updatedUser,
-      message: "User updated successfully",
-    });
+    return res.status(HTTP_STATUS.OK).json(
+      new ApiResponse(HTTP_STATUS.OK, updatedUser, "User updated successfully")
+    );
   } catch (error) {
     next(error);
   }
@@ -116,15 +126,13 @@ export const editUser = async (req, res, next) => {
 export const suspendUser = async (req, res, next) => {
   try {
     const { identifier } = req.body;
-    const adminId = req.user?.user_id || "ADMIN";
+    const adminId = req.user?._id || "ADMIN";
 
     const suspendedUser = await userService.suspendUser(identifier, adminId);
 
-    res.status(HTTP_STATUS.OK).json({
-      success: true,
-      data: suspendedUser,
-      message: "User suspended successfully",
-    });
+    return res.status(HTTP_STATUS.OK).json(
+      new ApiResponse(HTTP_STATUS.OK, suspendedUser, "User suspended successfully")
+    );
   } catch (error) {
     next(error);
   }
@@ -136,18 +144,16 @@ export const suspendUser = async (req, res, next) => {
 export const unsuspendUser = async (req, res, next) => {
   try {
     const { identifier } = req.body;
-    const adminId = req.user?.user_id || "ADMIN";
+    const adminId = req.user?._id || "ADMIN";
 
     const unsuspendedUser = await userService.unsuspendUser(
       identifier,
       adminId
     );
 
-    res.status(HTTP_STATUS.OK).json({
-      success: true,
-      data: unsuspendedUser,
-      message: "User unsuspended successfully",
-    });
+    return res.status(HTTP_STATUS.OK).json(
+      new ApiResponse(HTTP_STATUS.OK, unsuspendedUser, "User unsuspended successfully")
+    );
   } catch (error) {
     next(error);
   }

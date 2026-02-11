@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import User from "../models/UserSchema.js";
+
 
 /**
  * User Repository - Data Access Layer
@@ -20,7 +22,7 @@ class UserRepository {
    * @returns {Promise<Object|null>} User object or null
    */
   async findById(userId) {
-    return await User.findOne({ user_id: userId });
+    return await User.findById(userId);
   }
 
   /**
@@ -59,7 +61,7 @@ class UserRepository {
    * @returns {Promise<Object|null>} Updated user or null
    */
   async update(userId, updateData) {
-    return await User.findOneAndUpdate({ user_id: userId }, updateData, {
+    return await User.findByIdAndUpdate(userId, updateData, {
       new: true,
       runValidators: true,
     }).select("-password_hash");
@@ -71,7 +73,7 @@ class UserRepository {
    * @returns {Promise<Object|null>} Deleted user or null
    */
   async delete(userId) {
-    return await User.findOneAndDelete({ user_id: userId });
+    return await User.findByIdAndDelete(userId);
   }
 
   /**
@@ -80,10 +82,11 @@ class UserRepository {
    * @returns {Promise<Object|null>} User object or null
    */
   async findByIdentifier(identifier) {
+    const isObjectId = mongoose.Types.ObjectId.isValid(identifier);
     return await User.findOne({
       $or: [
         { email: identifier },
-        { user_id: identifier },
+        ...(isObjectId ? [{ _id: identifier }] : []),
         { sso_provider: identifier },
       ],
     }).select("-password_hash");
@@ -96,8 +99,8 @@ class UserRepository {
    * @returns {Promise<Object|null>} Updated user or null
    */
   async updateStatus(userId, status) {
-    return await User.findOneAndUpdate(
-      { user_id: userId },
+    return await User.findByIdAndUpdate(
+      userId,
       { status },
       { new: true, runValidators: true }
     ).select("-password_hash");
@@ -109,19 +112,35 @@ class UserRepository {
    * @param {number} limit - Items per page
    * @returns {Promise<Object>} Users and total count
    */
-  async findAllWithRoles(page = 1, limit = 10) {
+  async findAllWithRoles(page = 1, limit = 10, filters = {}) {
     const skip = (page - 1) * limit;
-    const users = await User.find()
+    const query = {};
+
+    // 🔎 Search by name or email
+    if (filters.search?.trim()) {
+      query.$or = [
+        { full_name: { $regex: filters.search, $options: "i" } },
+        { email: { $regex: filters.search, $options: "i" } },
+      ];
+    }
+
+    // 🎭 Filter by role
+    if (filters.role) {
+      query.roles = filters.role;
+    }
+
+    const users = await User.find(query)
       .select("-password_hash")
       .populate("role_data")
       .skip(skip)
       .limit(limit)
-      .sort({ created_at: -1 });
+      .sort({ createdAt: -1 }); // ⚠️ use correct field
 
-    const total = await User.countDocuments();
+    const total = await User.countDocuments(query);
 
     return { users, total };
   }
+
 }
 
 export default new UserRepository();

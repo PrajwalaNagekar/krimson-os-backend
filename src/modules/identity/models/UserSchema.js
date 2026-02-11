@@ -1,18 +1,11 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid";
 import { ROLES, HTTP_STATUS } from "../../../utils/constants.js";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    user_id: {
-      type: String,
-      default: uuidv4,
-      unique: true,
-      index: true,
-      required: true,
-    },
     email: {
+
       type: String,
       required: [true, "Please provide an email"],
       unique: true,
@@ -22,6 +15,11 @@ const userSchema = new mongoose.Schema(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         "Please provide a valid email",
       ],
+    },
+    customId: {
+      type: String,
+      unique: true,
+      index: true,
     },
     full_name: {
       type: String,
@@ -59,6 +57,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    // refresh_token: {
+    //   type: String,
+    //   default: null,
+    // },
+
     status: {
       type: String,
       enum: ["active", "inactive", "suspended"],

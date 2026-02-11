@@ -21,31 +21,30 @@ const validate = (schema, source = "body", options = {}) => {
     };
 
     return (req, res, next) => {
+        if (!req[source] || Object.keys(req[source]).length === 0) {
+            return next(
+                new AppError(`Request ${source} is missing or empty`, HTTP_STATUS.BAD_REQUEST)
+            );
+        }
+
         const { error, value } = schema.validate(req[source], defaultOptions);
+
 
         if (error) {
             // Format error messages for better readability
-            const errors = error.details.map((detail) => ({
-                field: detail.path.join("."),
-                message: detail.message.replace(/"/g, ""),
-                type: detail.type,
-            }));
+            const errorDetails = {};
+            error.details.forEach((detail) => {
+                errorDetails[detail.path.join(".")] = detail.message.replace(/"/g, "");
+            });
 
             // Create user-friendly error message
-            const errorMessage = errors
-                .map((e) => `${e.field}: ${e.message}`)
-                .join("; ");
-
-            // For development, include detailed errors
-            const errorResponse =
-                process.env.NODE_ENV === "development"
-                    ? { message: errorMessage, errors }
-                    : { message: errorMessage };
+            const firstErrorMessage = error.details[0].message.replace(/"/g, "");
 
             return next(
-                new AppError(errorMessage, HTTP_STATUS.BAD_REQUEST, errorResponse)
+                new AppError(firstErrorMessage, HTTP_STATUS.BAD_REQUEST, errorDetails)
             );
         }
+
 
         // Replace the original request data with validated & sanitized data
         req[source] = value;

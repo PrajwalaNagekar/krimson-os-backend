@@ -18,6 +18,7 @@ const router = express.Router();
  */
 
 // POST /api/v1/administration/users/assign-role - Assign role to user (create if needed)
+// app.use(protect)
 router.post(
   "/assign-role",
   protect,

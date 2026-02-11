@@ -36,7 +36,8 @@ class UserService {
           `[UserService] User ${data.email} already has role ${data.role}. Skipping addition.`
         );
         return {
-          user_id: existingUser.user_id,
+          id: existingUser._id,
+          _id: existingUser._id,
           full_name: existingUser.full_name,
           email: existingUser.email,
           role: existingUser.active_role,
@@ -56,7 +57,8 @@ class UserService {
       );
 
       return {
-        user_id: existingUser.user_id,
+        id: existingUser._id,
+        _id: existingUser._id,
         full_name: existingUser.full_name,
         email: existingUser.email,
         role: existingUser.active_role, // Keeps primary role
@@ -106,7 +108,8 @@ class UserService {
     }
 
     return {
-      user_id: newUser.user_id,
+      id: newUser._id,
+      _id: newUser._id,
       full_name: newUser.full_name,
       email: newUser.email,
       role: newUser.active_role,
@@ -137,8 +140,12 @@ class UserService {
    * @param {number} limit - Items per page
    * @returns {Promise<Object>} Users with roles
    */
-  async getAllUsersWithRoles(page = 1, limit = 10) {
-    const { users, total } = await userRepository.findAllWithRoles(page, limit);
+  async getAllUsersWithRoles(page = 1, limit = 10, filters = {}) {
+    const { users, total } = await userRepository.findAllWithRoles(
+      page,
+      limit,
+      filters
+    );
 
     return {
       users,
@@ -211,7 +218,7 @@ class UserService {
       }
     }
 
-    const updatedUser = await userRepository.update(user.user_id, updates);
+    const updatedUser = await userRepository.update(user._id, updates);
     return updatedUser;
   }
 
@@ -232,7 +239,7 @@ class UserService {
     }
 
     const suspendedUser = await userRepository.updateStatus(
-      user.user_id,
+      user._id,
       "suspended",
       adminId
     );
@@ -256,7 +263,7 @@ class UserService {
     }
 
     const unsuspendedUser = await userRepository.updateStatus(
-      user.user_id,
+      user._id,
       "active",
       adminId
     );

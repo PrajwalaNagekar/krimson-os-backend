@@ -35,9 +35,10 @@ const errorHandler = (err, req, res, next) => {
     res.status(statusCode).json({
         success: false,
         message,
-        // Hide stack trace in production for security
-        stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
+        data: err.data || null,
     });
+
+
 };
 
 export default errorHandler;

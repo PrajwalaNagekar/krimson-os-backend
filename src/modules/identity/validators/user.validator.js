@@ -95,7 +95,7 @@ const switchRole = Joi.object({
 
 // Assign role validation
 const assignRole = Joi.object({
-  user_id: commonSchemas.mongoId.required(),
+  id: commonSchemas.mongoId.required(),
   role: Joi.string()
     .valid(...Object.values(ROLES))
     .required()
@@ -107,7 +107,7 @@ const assignRole = Joi.object({
 
 // Remove role validation
 const removeRole = Joi.object({
-  user_id: commonSchemas.mongoId.required(),
+  id: commonSchemas.mongoId.required(),
   role: Joi.string()
     .valid(...Object.values(ROLES))
     .required()
