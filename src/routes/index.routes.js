@@ -15,6 +15,7 @@ import roleRoutes from "../modules/access-control/routes/role.routes.js";
 // Administration Module Routes
 import adminRoutes from "../modules/administration/admin/routes/admin.routes.js";
 import userManagementRoutes from "../modules/administration/admin/routes/userManagement.routes.js";
+import curriculumRoutes from "../modules/academics/lms/routes/curriculum.routes.js";
 // import itAdminRoutes from "../modules/administration/it-admin/routes/itAdmin.routes.js";
 // import librarianRoutes from "../modules/administration/librarian/routes/librarian.routes.js";
 
@@ -52,6 +53,7 @@ router.use("/access-control", roleRoutes);
 // Administration
 router.use("/administration/admins", adminRoutes);
 router.use("/administration/users", userManagementRoutes);
+router.use("/administration/curriculum", curriculumRoutes);
 // router.use("/administration/it-admins", itAdminRoutes);
 // router.use("/administration/librarians", librarianRoutes);
 

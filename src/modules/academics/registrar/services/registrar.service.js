@@ -12,7 +12,6 @@ class RegistrarService {
     if (!registrar) {
       throw new AppError("Registrar not found", HTTP_STATUS.NOT_FOUND);
     }
-    return registrar;
   }
 
   async createRegistrar(data) {
