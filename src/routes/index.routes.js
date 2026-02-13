@@ -15,6 +15,9 @@ import roleRoutes from "../modules/access-control/routes/role.routes.js";
 // Administration Module Routes
 import adminRoutes from "../modules/administration/admin/routes/admin.routes.js";
 import userManagementRoutes from "../modules/administration/admin/routes/userManagement.routes.js";
+import departmentRoutes from "../modules/administration/admin/routes/department.routes.js";
+import gradeRoutes from "../modules/administration/admin/routes/grade.routes.js";
+import calendarEventRoutes from "../modules/administration/admin/routes/calendarEvent.routes.js";
 import curriculumRoutes from "../modules/academics/lms/routes/curriculum.routes.js";
 // import itAdminRoutes from "../modules/administration/it-admin/routes/itAdmin.routes.js";
 // import librarianRoutes from "../modules/administration/librarian/routes/librarian.routes.js";
@@ -53,6 +56,9 @@ router.use("/access-control", roleRoutes);
 // Administration
 router.use("/administration/admins", adminRoutes);
 router.use("/administration/users", userManagementRoutes);
+router.use("/administration/departments", departmentRoutes);
+router.use("/administration/grades", gradeRoutes);
+router.use("/administration/calendar-events", calendarEventRoutes);
 router.use("/administration/curriculum", curriculumRoutes);
 // router.use("/administration/it-admins", itAdminRoutes);
 // router.use("/administration/librarians", librarianRoutes);
