@@ -132,6 +132,23 @@ const gradeSchema = new mongoose.Schema(
     ],
 
     /**
+     * Teachers Assigned to this Grade (OPTIONAL)
+     * Multiple teachers can be assigned to one grade
+     * References the User model (teachers have role: "TEACHER")
+     *
+     * NOT REQUIRED during grade creation - teachers can be:
+     * - Added later via update operations
+     * - Edited/modified at any time
+     * - Removed when needed
+     */
+    teachers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    /**
      * Promotion Mapping
      * Points to next grade
      */
@@ -234,9 +251,26 @@ gradeSchema.pre("save", async function () {
 });
 
 /**
- * Automatically exclude soft-deleted records
+ * Automatically exclude soft-deleted records from queries
+ * Using explicit hooks instead of regex pattern for better compatibility
  */
-gradeSchema.pre(/^find/, async function () {
+gradeSchema.pre("find", function () {
+  this.where({ deletedAt: null });
+});
+
+gradeSchema.pre("findOne", function () {
+  this.where({ deletedAt: null });
+});
+
+gradeSchema.pre("findOneAndUpdate", function () {
+  this.where({ deletedAt: null });
+});
+
+gradeSchema.pre("count", function () {
+  this.where({ deletedAt: null });
+});
+
+gradeSchema.pre("countDocuments", function () {
   this.where({ deletedAt: null });
 });
 
