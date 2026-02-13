@@ -5,7 +5,12 @@ const LessonPlanSchema = new mongoose.Schema({
         ref: "Lesson",
         unique: true
     },
-
+    curriculumId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "CurriculumFramework",
+        required: true,
+        index: true
+    },
     projectPrompt: String,
     labActivity: String,
     observationGuide: String,

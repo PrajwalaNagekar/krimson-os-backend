@@ -1,8 +1,9 @@
 import { CurriculumFramework } from "../model/curriculumFramework.model.js";
 
-const createCurriculumFramework = async (data) => {
-    return await CurriculumFramework.create(data);
+const createCurriculumFramework = async (data, options = {}) => {
+    return await CurriculumFramework.create([data], options);
 };
+
 
 const getCurriculumFramework = async () => {
     return await CurriculumFramework.find();

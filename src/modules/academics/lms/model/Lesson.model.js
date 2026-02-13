@@ -21,5 +21,6 @@ const LessonSchema = new mongoose.Schema({
 
 LessonSchema.index({ topicId: 1 });
 LessonSchema.index({ plannedDate: 1 });
+LessonSchema.plugin(auditPlugin);
 
 export const CurriculumApproval = mongoose.model("CurriculumApproval", CurriculumApprovalSchema);

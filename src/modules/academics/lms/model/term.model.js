@@ -1,13 +1,19 @@
 import mongoose from "mongoose";
 
 const TermSchema = new mongoose.Schema({
-    name: { type: String, required: true }, // Term 1
-    academicYear: { type: String, required: true }, // 2025-26
+    name: { type: String, required: true },
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    curriculumId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "CurriculumFramework",
+        required: true
+    }
 }, { timestamps: true });
+
 
 TermSchema.index({ academicYear: 1 });
 
+TermSchema.plugin(auditPlugin);
 
 export const Term = mongoose.model("Term", TermSchema);
